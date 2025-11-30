@@ -49,8 +49,10 @@
         .container {
             display: flex;
             min-height: 100vh;
+            max-height: 100vh;
             padding: 40px;
             gap: 60px;
+            overflow: hidden;
         }
 
         /* Левая часть - Проигрыватель */
@@ -60,6 +62,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            overflow: visible;
         }
 
         .turntable {
@@ -373,9 +376,11 @@
 
         /* Правая часть - Поиск */
         .search-section {
-            width: 450px;
+            width: 500px;
             display: flex;
             flex-direction: column;
+            max-height: calc(100vh - 80px);
+            overflow: hidden;
         }
 
         .logo {
@@ -399,6 +404,7 @@
         .search-container {
             position: relative;
             margin-bottom: 30px;
+            flex-shrink: 0;
         }
 
         .search-input {
@@ -461,6 +467,7 @@
             flex: 1;
             overflow-y: auto;
             padding-right: 10px;
+            min-height: 0;
         }
 
         .results-container::-webkit-scrollbar {
@@ -481,6 +488,7 @@
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 20px;
+            padding-bottom: 20px;
         }
 
         .album-box {
@@ -732,11 +740,18 @@
             .container {
                 flex-direction: column;
                 align-items: center;
+                max-height: none;
+                overflow-y: auto;
             }
 
             .search-section {
                 width: 100%;
                 max-width: 500px;
+                max-height: none;
+            }
+
+            .results-container {
+                max-height: 600px;
             }
         }
 
@@ -755,6 +770,10 @@
             .vinyl {
                 width: 180px;
                 height: 180px;
+            }
+
+            .results-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -918,7 +937,7 @@
 
             try {
                 const response = await fetch(
-                    `${ITUNES_API}?term=${encodeURIComponent(query)}&media=music&limit=8`
+                    `${ITUNES_API}?term=${encodeURIComponent(query)}&media=music&limit=12`
                 );
                 const data = await response.json();
 
@@ -949,16 +968,24 @@
             resultsGrid.innerHTML = '';
 
             tracks.forEach((track, index) => {
+                // ИСПРАВЛЕНИЕ: Проверяем наличие previewUrl
+                if (!track.previewUrl) {
+                    console.log('Трек без превью:', track.trackName);
+                    return; // Пропускаем треки без превью
+                }
+
                 const albumBox = document.createElement('div');
                 albumBox.className = 'album-box';
                 albumBox.draggable = true;
+                
+                // ИСПРАВЛЕНИЕ: Сохраняем все данные в dataset
                 albumBox.dataset.preview = track.previewUrl;
                 albumBox.dataset.title = track.trackName;
                 albumBox.dataset.artist = track.artistName;
-                albumBox.dataset.artwork = track.artworkUrl100.replace('100x100', '300x300');
+                albumBox.dataset.artwork = track.artworkUrl100 ? track.artworkUrl100.replace('100x100', '600x600') : '';
 
                 albumBox.innerHTML = `
-                    <img class="album-cover" src="${track.artworkUrl100.replace('100x100', '300x300')}" alt="${track.collectionName}">
+                    <img class="album-cover" src="${track.artworkUrl100 ? track.artworkUrl100.replace('100x100', '600x600') : ''}" alt="${track.collectionName || track.trackName}">
                     <div class="album-vinyl-peek"></div>
                     <div class="album-info">
                         <div class="album-title">${track.trackName}</div>
@@ -969,14 +996,21 @@
                 // Анимация появления
                 setTimeout(() => {
                     albumBox.classList.add('visible');
-                }, index * 100);
+                }, index * 80);
 
                 // Drag события
                 albumBox.addEventListener('dragstart', handleDragStart);
                 albumBox.addEventListener('dragend', handleDragEnd);
 
                 // Двойной клик для воспроизведения
-                albumBox.addEventListener('dblclick', () => playTrack(track));
+                albumBox.addEventListener('dblclick', () => {
+                    playTrack({
+                        preview: track.previewUrl,
+                        title: track.trackName,
+                        artist: track.artistName,
+                        artwork: track.artworkUrl100 ? track.artworkUrl100.replace('100x100', '600x600') : ''
+                    });
+                });
 
                 resultsGrid.appendChild(albumBox);
             });
@@ -990,12 +1024,15 @@
             draggedElement.classList.add('dragging');
             dropZone.classList.add('active');
 
-            e.dataTransfer.setData('text/plain', JSON.stringify({
+            // ИСПРАВЛЕНИЕ: Передаем данные из dataset
+            const trackData = {
                 preview: draggedElement.dataset.preview,
                 title: draggedElement.dataset.title,
                 artist: draggedElement.dataset.artist,
                 artwork: draggedElement.dataset.artwork
-            }));
+            };
+
+            e.dataTransfer.setData('text/plain', JSON.stringify(trackData));
         }
 
         function handleDragEnd() {
@@ -1017,7 +1054,14 @@
 
             try {
                 const data = JSON.parse(e.dataTransfer.getData('text/plain'));
-                loadVinyl(data);
+                console.log('Dropped track data:', data);
+                
+                // ИСПРАВЛЕНИЕ: Проверяем наличие preview перед загрузкой
+                if (data.preview) {
+                    loadVinyl(data);
+                } else {
+                    alert('У этого трека нет доступного превью');
+                }
             } catch (error) {
                 console.error('Drop error:', error);
             }
@@ -1025,6 +1069,12 @@
 
         // Загрузка винила
         function loadVinyl(track) {
+            // ИСПРАВЛЕНИЕ: Проверяем наличие preview
+            if (!track.preview) {
+                alert('У этого трека нет доступного превью');
+                return;
+            }
+
             currentTrack = track;
 
             // Анимация вставки
@@ -1048,39 +1098,63 @@
 
         // Воспроизведение
         function playTrack(track) {
-            if (!track.previewUrl && !track.preview) {
-                alert('Превью недоступно');
+            // ИСПРАВЛЕНИЕ: Тщательная проверка наличия preview
+            if (!track || !track.preview) {
+                console.error('Нет preview URL:', track);
+                alert('У этого трека нет доступного превью для воспроизведения');
                 return;
             }
 
-            const previewUrl = track.previewUrl || track.preview;
+            console.log('Playing track:', track);
 
-            currentTrack = {
-                preview: previewUrl,
-                title: track.trackName || track.title,
-                artist: track.artistName || track.artist,
-                artwork: (track.artworkUrl100 || track.artwork).replace('100x100', '300x300')
-            };
+            currentTrack = track;
 
             // Обновляем UI
-            labelImage.src = currentTrack.artwork;
+            labelImage.src = track.artwork;
             vinyl.classList.add('visible');
-            nowPlayingTitle.textContent = currentTrack.title;
-            nowPlayingArtist.textContent = currentTrack.artist;
+            nowPlayingTitle.textContent = track.title;
+            nowPlayingArtist.textContent = track.artist;
             nowPlaying.classList.add('visible');
 
+            // Останавливаем текущее воспроизведение
+            audioPlayer.pause();
+            audioPlayer.currentTime = 0;
+
             // Воспроизводим
-            audioPlayer.src = previewUrl;
+            audioPlayer.src = track.preview;
             audioPlayer.volume = volume;
-            audioPlayer.play();
+            
+            // ИСПРАВЛЕНИЕ: Добавляем обработку ошибок загрузки
+            audioPlayer.onerror = function(e) {
+                console.error('Ошибка загрузки аудио:', e);
+                alert('Не удалось загрузить трек. Попробуйте другой.');
+                stopPlayback();
+            };
 
-            isPlaying = true;
-            vinyl.classList.add('spinning');
-            tonearm.classList.add('playing');
+            audioPlayer.play()
+                .then(() => {
+                    console.log('Воспроизведение началось');
+                    isPlaying = true;
+                    vinyl.classList.add('spinning');
+                    tonearm.classList.add('playing');
+                    updatePlayButton();
+                    initAudioAnalyser();
+                })
+                .catch(error => {
+                    console.error('Ошибка воспроизведения:', error);
+                    alert('Не удалось воспроизвести трек');
+                    stopPlayback();
+                });
+        }
+
+        // ИСПРАВЛЕНИЕ: Добавляем функцию остановки
+        function stopPlayback() {
+            isPlaying = false;
+            vinyl.classList.remove('spinning');
+            tonearm.classList.remove('playing');
             updatePlayButton();
-
-            // Инициализируем анализатор
-            initAudioAnalyser();
+            const bars = vuMeter.querySelectorAll('.vu-bar-fill');
+            bars.forEach(bar => bar.style.height = '0%');
         }
 
         // Анализатор аудио для VU метра
@@ -1145,14 +1219,7 @@
         stopBtn.addEventListener('click', () => {
             audioPlayer.pause();
             audioPlayer.currentTime = 0;
-            isPlaying = false;
-            vinyl.classList.remove('spinning');
-            tonearm.classList.remove('playing');
-            updatePlayButton();
-
-            // Сброс VU метра
-            const bars = vuMeter.querySelectorAll('.vu-bar-fill');
-            bars.forEach(bar => bar.style.height = '0%');
+            stopPlayback();
         });
 
         // Громкость
@@ -1212,14 +1279,12 @@
 
         // Окончание трека
         audioPlayer.addEventListener('ended', () => {
-            isPlaying = false;
-            vinyl.classList.remove('spinning');
-            tonearm.classList.remove('playing');
-            updatePlayButton();
+            stopPlayback();
         });
 
         // Инициализация громкости
-        updateVolume(volumeKnob.getBoundingClientRect().left);
+        updateVolume(document.querySelector('.volume-track').getBoundingClientRect().left + 
+                     document.querySelector('.volume-track').getBoundingClientRect().width * 0.7);
     </script>
 </body>
 </html>
