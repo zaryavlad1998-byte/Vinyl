@@ -32,7 +32,6 @@
             color: var(--cream);
         }
 
-        /* Зернистая текстура */
         body::before {
             content: '';
             position: fixed;
@@ -55,7 +54,6 @@
             overflow: hidden;
         }
 
-        /* Левая часть - Проигрыватель */
         .player-section {
             flex: 1;
             display: flex;
@@ -195,7 +193,6 @@
             z-index: 10;
         }
 
-        /* Тонарм */
         .tonearm-base {
             position: absolute;
             right: 40px;
@@ -256,7 +253,6 @@
             transform: rotate(-45deg);
         }
 
-        /* Слайдер громкости */
         .volume-section {
             margin-top: 40px;
             display: flex;
@@ -343,7 +339,6 @@
             box-shadow: 0 0 8px var(--gold);
         }
 
-        /* Индикатор уровня */
         .vu-meter {
             display: flex;
             gap: 3px;
@@ -374,7 +369,6 @@
             background: var(--red-accent);
         }
 
-        /* Правая часть - Поиск */
         .search-section {
             width: 500px;
             display: flex;
@@ -399,6 +393,76 @@
             letter-spacing: 4px;
             text-transform: uppercase;
             margin-bottom: 40px;
+        }
+
+        .auth-section {
+            background: rgba(42, 24, 16, 0.6);
+            border: 2px solid var(--gold);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            flex-shrink: 0;
+        }
+
+        .auth-section.hidden {
+            display: none;
+        }
+
+        .auth-title {
+            font-family: 'Playfair Display', serif;
+            color: var(--gold);
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .auth-input {
+            width: 100%;
+            padding: 12px 20px;
+            font-family: 'Space Mono', monospace;
+            font-size: 14px;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--gold);
+            border-radius: 10px;
+            color: var(--cream);
+            margin-bottom: 10px;
+            outline: none;
+        }
+
+        .auth-input:focus {
+            border-color: var(--gold-bright);
+            box-shadow: 0 0 15px rgba(212, 165, 116, 0.2);
+        }
+
+        .auth-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(145deg, var(--gold-bright), var(--gold));
+            border: none;
+            border-radius: 10px;
+            color: var(--wood-dark);
+            font-family: 'Space Mono', monospace;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .auth-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(212, 165, 116, 0.4);
+        }
+
+        .auth-status {
+            margin-top: 10px;
+            font-size: 12px;
+            text-align: center;
+        }
+
+        .auth-status.success {
+            color: var(--green-glow);
+        }
+
+        .auth-status.error {
+            color: var(--red-accent);
         }
 
         .search-container {
@@ -462,7 +526,6 @@
             fill: var(--wood-dark);
         }
 
-        /* Результаты поиска */
         .results-container {
             flex: 1;
             overflow-y: auto;
@@ -591,7 +654,6 @@
             opacity: 0.8;
         }
 
-        /* Зона для перетаскивания */
         .drop-zone {
             position: absolute;
             top: 0;
@@ -611,7 +673,6 @@
             pointer-events: all;
         }
 
-        /* Текущий трек */
         .now-playing {
             margin-top: 30px;
             padding: 20px;
@@ -649,7 +710,6 @@
             color: var(--gold);
         }
 
-        /* Анимация загрузки */
         .loading {
             display: none;
             justify-content: center;
@@ -682,7 +742,6 @@
             border-radius: 50%;
         }
 
-        /* Кнопки управления */
         .controls {
             display: flex;
             gap: 15px;
@@ -722,7 +781,6 @@
             fill: var(--wood-dark);
         }
 
-        /* Сообщение о пустом поиске */
         .empty-state {
             text-align: center;
             padding: 60px 20px;
@@ -735,7 +793,6 @@
             margin-bottom: 20px;
         }
 
-        /* Адаптивность */
         @media (max-width: 1200px) {
             .container {
                 flex-direction: column;
@@ -780,7 +837,6 @@
 </head>
 <body>
     <div class="container">
-        <!-- Проигрыватель -->
         <div class="player-section">
             <div class="turntable">
                 <div class="drop-zone" id="dropZone"></div>
@@ -801,7 +857,6 @@
                 </div>
             </div>
 
-            <!-- Управление -->
             <div class="controls">
                 <button class="control-btn" id="playBtn" title="Play/Pause">
                     <svg viewBox="0 0 24 24" id="playIcon">
@@ -815,7 +870,6 @@
                 </button>
             </div>
 
-            <!-- Громкость -->
             <div class="volume-section">
                 <span class="volume-label">Volume</span>
                 <div class="volume-slider-container">
@@ -836,12 +890,9 @@
                         <div class="volume-indicator"></div>
                     </div>
                 </div>
-                <div class="vu-meter" id="vuMeter">
-                    <!-- VU bars будут добавлены через JS -->
-                </div>
+                <div class="vu-meter" id="vuMeter"></div>
             </div>
 
-            <!-- Текущий трек -->
             <div class="now-playing" id="nowPlaying">
                 <div class="now-playing-label">♪ Сейчас играет</div>
                 <div class="now-playing-title" id="nowPlayingTitle">-</div>
@@ -849,10 +900,21 @@
             </div>
         </div>
 
-        <!-- Поиск -->
         <div class="search-section">
             <h1 class="logo">Vinyl Dreams</h1>
             <p class="tagline">Окунись в мир аналогового звука</p>
+
+            <div class="auth-section" id="authSection">
+                <div class="auth-title">🔑 Авторизация Яндекс.Музыка</div>
+                <input 
+                    type="text" 
+                    class="auth-input" 
+                    id="tokenInput" 
+                    placeholder="Вставьте токен из URL..."
+                >
+                <button class="auth-btn" id="authBtn">Авторизоваться</button>
+                <div class="auth-status" id="authStatus"></div>
+            </div>
 
             <div class="search-container">
                 <input
@@ -861,8 +923,9 @@
                     id="searchInput"
                     placeholder="Поиск группы или песни..."
                     autocomplete="off"
+                    disabled
                 >
-                <button class="search-btn" id="searchBtn">
+                <button class="search-btn" id="searchBtn" disabled>
                     <svg viewBox="0 0 24 24">
                         <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
                     </svg>
@@ -876,40 +939,47 @@
             <div class="results-container" id="resultsContainer">
                 <div class="empty-state" id="emptyState">
                     <div class="empty-state-icon">🎵</div>
-                    <p>Введите название песни или исполнителя<br>и нажмите поиск</p>
+                    <p>Авторизуйтесь через Яндекс.Музыку<br>чтобы начать поиск</p>
                 </div>
                 <div class="results-grid" id="resultsGrid"></div>
             </div>
         </div>
     </div>
 
-    <!-- Аудио элемент -->
-    <audio id="audioPlayer" crossorigin="anonymous"></audio>
+    <audio id="audioPlayer"></audio>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-md5/2.19.0/js/md5.min.js"></script>
+    
     <script>
-        // iTunes Search API
-        const ITUNES_API = 'https://itunes.apple.com/search';
-
-        // Элементы DOM
-        const searchInput = document.getElementById('searchInput');
-        const searchBtn = document.getElementById('searchBtn');
-        const resultsGrid = document.getElementById('resultsGrid');
-        const loading = document.getElementById('loading');
-        const emptyState = document.getElementById('emptyState');
-        const vinyl = document.getElementById('vinyl');
-        const tonearm = document.getElementById('tonearm');
-        const dropZone = document.getElementById('dropZone');
-        const audioPlayer = document.getElementById('audioPlayer');
-        const playBtn = document.getElementById('playBtn');
-        const stopBtn = document.getElementById('stopBtn');
-        const nowPlaying = document.getElementById('nowPlaying');
-        const nowPlayingTitle = document.getElementById('nowPlayingTitle');
-        const nowPlayingArtist = document.getElementById('nowPlayingArtist');
-        const labelImage = document.getElementById('labelImage');
-        const volumeFill = document.getElementById('volumeFill');
-        const volumeKnob = document.getElementById('volumeKnob');
-        const vuMeter = document.getElementById('vuMeter');
-        const playIcon = document.getElementById('playIcon');
+        const API_BASE = 'https://api.music.yandex.net';
+        let accessToken = '';
+        
+        // DOM элементы
+        const els = {
+            searchInput: document.getElementById('searchInput'),
+            searchBtn: document.getElementById('searchBtn'),
+            resultsGrid: document.getElementById('resultsGrid'),
+            loading: document.getElementById('loading'),
+            emptyState: document.getElementById('emptyState'),
+            vinyl: document.getElementById('vinyl'),
+            tonearm: document.getElementById('tonearm'),
+            dropZone: document.getElementById('dropZone'),
+            audioPlayer: document.getElementById('audioPlayer'),
+            playBtn: document.getElementById('playBtn'),
+            stopBtn: document.getElementById('stopBtn'),
+            nowPlaying: document.getElementById('nowPlaying'),
+            nowPlayingTitle: document.getElementById('nowPlayingTitle'),
+            nowPlayingArtist: document.getElementById('nowPlayingArtist'),
+            labelImage: document.getElementById('labelImage'),
+            volumeFill: document.getElementById('volumeFill'),
+            volumeKnob: document.getElementById('volumeKnob'),
+            vuMeter: document.getElementById('vuMeter'),
+            playIcon: document.getElementById('playIcon'),
+            authSection: document.getElementById('authSection'),
+            tokenInput: document.getElementById('tokenInput'),
+            authBtn: document.getElementById('authBtn'),
+            authStatus: document.getElementById('authStatus')
+        };
 
         let currentTrack = null;
         let isPlaying = false;
@@ -919,306 +989,288 @@
         let dataArray = null;
 
         // Инициализация VU метра
-        function initVUMeter() {
-            for (let i = 0; i < 12; i++) {
-                const bar = document.createElement('div');
-                bar.className = 'vu-bar';
-                bar.innerHTML = '<div class="vu-bar-fill" style="height: 0%"></div>';
-                vuMeter.appendChild(bar);
-            }
+        for (let i = 0; i < 12; i++) {
+            const bar = document.createElement('div');
+            bar.className = 'vu-bar';
+            bar.innerHTML = '<div class="vu-bar-fill" style="height: 0%"></div>';
+            els.vuMeter.appendChild(bar);
         }
-        initVUMeter();
+
+        // Проверка сохраненного токена
+        const savedToken = localStorage.getItem('yamusic_token');
+        if (savedToken) {
+            accessToken = savedToken;
+            els.authSection.classList.add('hidden');
+            els.searchInput.disabled = false;
+            els.searchBtn.disabled = false;
+            els.emptyState.innerHTML = `
+                <div class="empty-state-icon">🎵</div>
+                <p>Введите название песни или исполнителя<br>и нажмите поиск</p>
+            `;
+        }
+
+        // Авторизация
+        els.authBtn.addEventListener('click', () => {
+            const url = els.tokenInput.value.trim();
+            const match = url.match(/access_token=([^&]+)/);
+            
+            if (match && match[1]) {
+                accessToken = match[1];
+                localStorage.setItem('yamusic_token', accessToken);
+                
+                els.authStatus.textContent = '✓ Авторизация успешна!';
+                els.authStatus.className = 'auth-status success';
+                
+                setTimeout(() => {
+                    els.authSection.classList.add('hidden');
+                    els.searchInput.disabled = false;
+                    els.searchBtn.disabled = false;
+                    els.emptyState.innerHTML = `
+                        <div class="empty-state-icon">🎵</div>
+                        <p>Введите название песни или исполнителя<br>и нажмите поиск</p>
+                    `;
+                }, 1000);
+            } else {
+                els.authStatus.textContent = '✗ Неверный формат токена';
+                els.authStatus.className = 'auth-status error';
+            }
+        });
 
         // Поиск музыки
         async function searchMusic(query) {
-            loading.classList.add('active');
-            emptyState.style.display = 'none';
-            resultsGrid.innerHTML = '';
+            if (!accessToken) return;
+
+            els.loading.classList.add('active');
+            els.emptyState.style.display = 'none';
+            els.resultsGrid.innerHTML = '';
 
             try {
                 const response = await fetch(
-                    `${ITUNES_API}?term=${encodeURIComponent(query)}&media=music&limit=12`
+                    `${API_BASE}/search?text=${encodeURIComponent(query)}&type=track&page=0&pageSize=12`,
+                    { headers: { 'Authorization': `OAuth ${accessToken}` } }
                 );
+
                 const data = await response.json();
+                els.loading.classList.remove('active');
 
-                loading.classList.remove('active');
-
-                if (data.results.length === 0) {
-                    emptyState.innerHTML = `
+                if (!data.result?.tracks?.results?.length) {
+                    els.emptyState.innerHTML = `
                         <div class="empty-state-icon">😔</div>
                         <p>Ничего не найдено<br>Попробуйте другой запрос</p>
                     `;
-                    emptyState.style.display = 'block';
+                    els.emptyState.style.display = 'block';
                     return;
                 }
 
-                displayResults(data.results);
+                displayResults(data.result.tracks.results);
             } catch (error) {
-                loading.classList.remove('active');
-                emptyState.innerHTML = `
+                els.loading.classList.remove('active');
+                els.emptyState.innerHTML = `
                     <div class="empty-state-icon">⚠️</div>
                     <p>Ошибка поиска<br>Попробуйте позже</p>
                 `;
-                emptyState.style.display = 'block';
+                els.emptyState.style.display = 'block';
             }
         }
 
         // Отображение результатов
         function displayResults(tracks) {
-            resultsGrid.innerHTML = '';
+            els.resultsGrid.innerHTML = '';
 
             tracks.forEach((track, index) => {
-                // ИСПРАВЛЕНИЕ: Проверяем наличие previewUrl
-                if (!track.previewUrl) {
-                    console.log('Трек без превью:', track.trackName);
-                    return; // Пропускаем треки без превью
-                }
+                if (!track.available) return;
 
-                const albumBox = document.createElement('div');
-                albumBox.className = 'album-box';
-                albumBox.draggable = true;
+                const box = document.createElement('div');
+                box.className = 'album-box';
+                box.draggable = true;
                 
-                // ИСПРАВЛЕНИЕ: Сохраняем все данные в dataset
-                albumBox.dataset.preview = track.previewUrl;
-                albumBox.dataset.title = track.trackName;
-                albumBox.dataset.artist = track.artistName;
-                albumBox.dataset.artwork = track.artworkUrl100 ? track.artworkUrl100.replace('100x100', '600x600') : '';
+                const cover = `https://${track.coverUri.replace('%%', '400x400')}`;
+                const artist = track.artists.map(a => a.name).join(', ');
 
-                albumBox.innerHTML = `
-                    <img class="album-cover" src="${track.artworkUrl100 ? track.artworkUrl100.replace('100x100', '600x600') : ''}" alt="${track.collectionName || track.trackName}">
+                box.dataset.trackId = track.id;
+                box.dataset.albumId = track.albums?.[0]?.id || '';
+                box.dataset.title = track.title;
+                box.dataset.artist = artist;
+                box.dataset.artwork = cover;
+
+                box.innerHTML = `
+                    <img class="album-cover" src="${cover}" alt="${track.title}">
                     <div class="album-vinyl-peek"></div>
                     <div class="album-info">
-                        <div class="album-title">${track.trackName}</div>
-                        <div class="album-artist">${track.artistName}</div>
+                        <div class="album-title">${track.title}</div>
+                        <div class="album-artist">${artist}</div>
                     </div>
                 `;
 
-                // Анимация появления
-                setTimeout(() => {
-                    albumBox.classList.add('visible');
-                }, index * 80);
+                setTimeout(() => box.classList.add('visible'), index * 80);
 
-                // Drag события
-                albumBox.addEventListener('dragstart', handleDragStart);
-                albumBox.addEventListener('dragend', handleDragEnd);
+                box.addEventListener('dragstart', handleDragStart);
+                box.addEventListener('dragend', handleDragEnd);
+                box.addEventListener('dblclick', () => playYandexTrack(track.id));
 
-                // Двойной клик для воспроизведения
-                albumBox.addEventListener('dblclick', () => {
-                    playTrack({
-                        preview: track.previewUrl,
-                        title: track.trackName,
-                        artist: track.artistName,
-                        artwork: track.artworkUrl100 ? track.artworkUrl100.replace('100x100', '600x600') : ''
-                    });
-                });
-
-                resultsGrid.appendChild(albumBox);
+                els.resultsGrid.appendChild(box);
             });
         }
 
-        // Drag and Drop
+        // Получение ссылки на трек (используем прямое скачивание)
+        async function getTrackUrl(trackId) {
+            try {
+                const response = await fetch(
+                    `${API_BASE}/tracks/${trackId}/download-info`,
+                    { headers: { 'Authorization': `OAuth ${accessToken}` } }
+                );
+
+                const data = await response.json();
+                const info = data.result.find(i => i.codec === 'mp3') || data.result[0];
+
+                const xmlResp = await fetch(info.downloadInfoUrl);
+                const xml = await xmlResp.text();
+                
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(xml, 'text/xml');
+                const host = doc.getElementsByTagName('host')[0].textContent;
+                const path = doc.getElementsByTagName('path')[0].textContent;
+                const ts = doc.getElementsByTagName('ts')[0].textContent;
+                const s = doc.getElementsByTagName('s')[0].textContent;
+
+                const sign = md5(`XGRlBW9FXlekgbPrRHuSiA${path.substring(1) + s}`);
+                return `https://${host}/get-mp3/${sign}/${ts}${path}`;
+            } catch (error) {
+                console.error('Error:', error);
+                return null;
+            }
+        }
+
+        // Воспроизведение
+        async function playYandexTrack(trackId) {
+            const url = await getTrackUrl(trackId);
+            if (!url) {
+                alert('Не удалось получить ссылку на трек');
+                return;
+            }
+
+            const box = document.querySelector(`[data-track-id="${trackId}"]`);
+            if (!box) return;
+
+            currentTrack = {
+                url,
+                title: box.dataset.title,
+                artist: box.dataset.artist,
+                artwork: box.dataset.artwork
+            };
+
+            els.labelImage.src = currentTrack.artwork;
+            els.vinyl.classList.add('visible');
+            els.nowPlayingTitle.textContent = currentTrack.title;
+            els.nowPlayingArtist.textContent = currentTrack.artist;
+            els.nowPlaying.classList.add('visible');
+
+            els.audioPlayer.pause();
+            els.audioPlayer.src = url;
+            els.audioPlayer.volume = volume;
+            
+            els.audioPlayer.onerror = () => {
+                alert('Ошибка загрузки трека');
+                stopPlayback();
+            };
+
+            try {
+                await els.audioPlayer.play();
+                isPlaying = true;
+                els.vinyl.classList.add('spinning');
+                els.tonearm.classList.add('playing');
+                updatePlayButton();
+                initAudioAnalyser();
+            } catch (error) {
+                alert('Ошибка воспроизведения');
+                stopPlayback();
+            }
+        }
+
+        // Drag & Drop
         let draggedElement = null;
 
         function handleDragStart(e) {
             draggedElement = e.target.closest('.album-box');
             draggedElement.classList.add('dragging');
-            dropZone.classList.add('active');
-
-            // ИСПРАВЛЕНИЕ: Передаем данные из dataset
-            const trackData = {
-                preview: draggedElement.dataset.preview,
-                title: draggedElement.dataset.title,
-                artist: draggedElement.dataset.artist,
-                artwork: draggedElement.dataset.artwork
-            };
-
-            e.dataTransfer.setData('text/plain', JSON.stringify(trackData));
+            els.dropZone.classList.add('active');
+            e.dataTransfer.setData('trackId', draggedElement.dataset.trackId);
         }
 
         function handleDragEnd() {
-            if (draggedElement) {
-                draggedElement.classList.remove('dragging');
-            }
-            dropZone.classList.remove('active');
+            if (draggedElement) draggedElement.classList.remove('dragging');
+            els.dropZone.classList.remove('active');
             draggedElement = null;
         }
 
-        // Drop zone события
-        dropZone.addEventListener('dragover', (e) => {
+        els.dropZone.addEventListener('dragover', e => e.preventDefault());
+        els.dropZone.addEventListener('drop', async (e) => {
             e.preventDefault();
+            els.dropZone.classList.remove('active');
+            const trackId = e.dataTransfer.getData('trackId');
+            if (trackId) await playYandexTrack(trackId);
         });
 
-        dropZone.addEventListener('drop', (e) => {
-            e.preventDefault();
-            dropZone.classList.remove('active');
-
-            try {
-                const data = JSON.parse(e.dataTransfer.getData('text/plain'));
-                console.log('Dropped track data:', data);
-                
-                // ИСПРАВЛЕНИЕ: Проверяем наличие preview перед загрузкой
-                if (data.preview) {
-                    loadVinyl(data);
-                } else {
-                    alert('У этого трека нет доступного превью');
-                }
-            } catch (error) {
-                console.error('Drop error:', error);
-            }
-        });
-
-        // Загрузка винила
-        function loadVinyl(track) {
-            // ИСПРАВЛЕНИЕ: Проверяем наличие preview
-            if (!track.preview) {
-                alert('У этого трека нет доступного превью');
-                return;
-            }
-
-            currentTrack = track;
-
-            // Анимация вставки
-            vinyl.classList.remove('visible', 'spinning');
-
-            setTimeout(() => {
-                labelImage.src = track.artwork;
-                vinyl.classList.add('visible');
-
-                // Обновляем информацию
-                nowPlayingTitle.textContent = track.title;
-                nowPlayingArtist.textContent = track.artist;
-                nowPlaying.classList.add('visible');
-
-                // Воспроизводим
-                setTimeout(() => {
-                    playTrack(track);
-                }, 500);
-            }, 300);
-        }
-
-        // Воспроизведение
-        function playTrack(track) {
-            // ИСПРАВЛЕНИЕ: Тщательная проверка наличия preview
-            if (!track || !track.preview) {
-                console.error('Нет preview URL:', track);
-                alert('У этого трека нет доступного превью для воспроизведения');
-                return;
-            }
-
-            console.log('Playing track:', track);
-
-            currentTrack = track;
-
-            // Обновляем UI
-            labelImage.src = track.artwork;
-            vinyl.classList.add('visible');
-            nowPlayingTitle.textContent = track.title;
-            nowPlayingArtist.textContent = track.artist;
-            nowPlaying.classList.add('visible');
-
-            // Останавливаем текущее воспроизведение
-            audioPlayer.pause();
-            audioPlayer.currentTime = 0;
-
-            // Воспроизводим
-            audioPlayer.src = track.preview;
-            audioPlayer.volume = volume;
-            
-            // ИСПРАВЛЕНИЕ: Добавляем обработку ошибок загрузки
-            audioPlayer.onerror = function(e) {
-                console.error('Ошибка загрузки аудио:', e);
-                alert('Не удалось загрузить трек. Попробуйте другой.');
-                stopPlayback();
-            };
-
-            audioPlayer.play()
-                .then(() => {
-                    console.log('Воспроизведение началось');
-                    isPlaying = true;
-                    vinyl.classList.add('spinning');
-                    tonearm.classList.add('playing');
-                    updatePlayButton();
-                    initAudioAnalyser();
-                })
-                .catch(error => {
-                    console.error('Ошибка воспроизведения:', error);
-                    alert('Не удалось воспроизвести трек');
-                    stopPlayback();
-                });
-        }
-
-        // ИСПРАВЛЕНИЕ: Добавляем функцию остановки
         function stopPlayback() {
             isPlaying = false;
-            vinyl.classList.remove('spinning');
-            tonearm.classList.remove('playing');
+            els.vinyl.classList.remove('spinning');
+            els.tonearm.classList.remove('playing');
             updatePlayButton();
-            const bars = vuMeter.querySelectorAll('.vu-bar-fill');
-            bars.forEach(bar => bar.style.height = '0%');
+            document.querySelectorAll('.vu-bar-fill').forEach(bar => bar.style.height = '0%');
         }
 
-        // Анализатор аудио для VU метра
         function initAudioAnalyser() {
             if (!audioContext) {
                 audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                const source = audioContext.createMediaElementSource(audioPlayer);
+                const source = audioContext.createMediaElementSource(els.audioPlayer);
                 analyser = audioContext.createAnalyser();
                 analyser.fftSize = 32;
                 source.connect(analyser);
                 analyser.connect(audioContext.destination);
                 dataArray = new Uint8Array(analyser.frequencyBinCount);
             }
-
             updateVUMeter();
         }
 
-        // Обновление VU метра
         function updateVUMeter() {
             if (!isPlaying || !analyser) return;
-
             analyser.getByteFrequencyData(dataArray);
-
-            const bars = vuMeter.querySelectorAll('.vu-bar-fill');
+            const bars = els.vuMeter.querySelectorAll('.vu-bar-fill');
             bars.forEach((bar, i) => {
-                const value = dataArray[i] || 0;
-                const height = (value / 255) * 100;
-                bar.style.height = height + '%';
+                bar.style.height = ((dataArray[i] || 0) / 255 * 100) + '%';
             });
-
             requestAnimationFrame(updateVUMeter);
         }
 
-        // Обновление кнопки play
         function updatePlayButton() {
             if (isPlaying) {
-                playIcon.innerHTML = '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>';
-                playBtn.classList.add('active');
+                els.playIcon.innerHTML = '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>';
+                els.playBtn.classList.add('active');
             } else {
-                playIcon.innerHTML = '<path d="M8 5v14l11-7z"/>';
-                playBtn.classList.remove('active');
+                els.playIcon.innerHTML = '<path d="M8 5v14l11-7z"/>';
+                els.playBtn.classList.remove('active');
             }
         }
 
-        // Управление воспроизведением
-        playBtn.addEventListener('click', () => {
+        // События управления
+        els.playBtn.addEventListener('click', () => {
             if (!currentTrack) return;
-
             if (isPlaying) {
-                audioPlayer.pause();
+                els.audioPlayer.pause();
                 isPlaying = false;
-                vinyl.classList.remove('spinning');
+                els.vinyl.classList.remove('spinning');
             } else {
-                audioPlayer.play();
+                els.audioPlayer.play();
                 isPlaying = true;
-                vinyl.classList.add('spinning');
+                els.vinyl.classList.add('spinning');
                 updateVUMeter();
             }
             updatePlayButton();
         });
 
-        stopBtn.addEventListener('click', () => {
-            audioPlayer.pause();
-            audioPlayer.currentTime = 0;
+        els.stopBtn.addEventListener('click', () => {
+            els.audioPlayer.pause();
+            els.audioPlayer.currentTime = 0;
             stopPlayback();
         });
 
@@ -1226,65 +1278,48 @@
         let isDraggingVolume = false;
 
         function updateVolume(clientX) {
-            const track = document.querySelector('.volume-track');
-            const rect = track.getBoundingClientRect();
-            let percentage = (clientX - rect.left) / rect.width;
-            percentage = Math.max(0, Math.min(1, percentage));
-
-            volume = percentage;
-            audioPlayer.volume = volume;
-
-            volumeFill.style.width = (percentage * 100) + '%';
-            volumeKnob.style.left = (percentage * 100) + '%';
-
-            // Обновляем индикаторы
+            const rect = els.volumeKnob.parentElement.getBoundingClientRect();
+            let pct = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+            volume = pct;
+            els.audioPlayer.volume = volume;
+            els.volumeFill.style.width = (pct * 100) + '%';
+            els.volumeKnob.style.left = (pct * 100) + '%';
             const indicators = document.querySelectorAll('.volume-indicator');
-            const activeCount = Math.round(percentage * indicators.length);
-            indicators.forEach((ind, i) => {
-                ind.classList.toggle('active', i < activeCount);
-            });
+            const activeCount = Math.round(pct * indicators.length);
+            indicators.forEach((ind, i) => ind.classList.toggle('active', i < activeCount));
         }
 
-        volumeKnob.addEventListener('mousedown', (e) => {
+        els.volumeKnob.addEventListener('mousedown', e => {
             isDraggingVolume = true;
             e.preventDefault();
         });
 
-        document.addEventListener('mousemove', (e) => {
-            if (isDraggingVolume) {
-                updateVolume(e.clientX);
-            }
+        document.addEventListener('mousemove', e => {
+            if (isDraggingVolume) updateVolume(e.clientX);
         });
 
-        document.addEventListener('mouseup', () => {
-            isDraggingVolume = false;
-        });
+        document.addEventListener('mouseup', () => isDraggingVolume = false);
 
-        document.querySelector('.volume-track').addEventListener('click', (e) => {
-            updateVolume(e.clientX);
-        });
+        els.volumeKnob.parentElement.addEventListener('click', e => updateVolume(e.clientX));
 
         // Поиск
-        searchBtn.addEventListener('click', () => {
-            const query = searchInput.value.trim();
+        els.searchBtn.addEventListener('click', () => {
+            const query = els.searchInput.value.trim();
             if (query) searchMusic(query);
         });
 
-        searchInput.addEventListener('keypress', (e) => {
+        els.searchInput.addEventListener('keypress', e => {
             if (e.key === 'Enter') {
-                const query = searchInput.value.trim();
+                const query = els.searchInput.value.trim();
                 if (query) searchMusic(query);
             }
         });
 
-        // Окончание трека
-        audioPlayer.addEventListener('ended', () => {
-            stopPlayback();
-        });
+        els.audioPlayer.addEventListener('ended', stopPlayback);
 
-        // Инициализация громкости
-        updateVolume(document.querySelector('.volume-track').getBoundingClientRect().left + 
-                     document.querySelector('.volume-track').getBoundingClientRect().width * 0.7);
+        // Инит громкость
+        updateVolume(els.volumeKnob.parentElement.getBoundingClientRect().left + 
+                     els.volumeKnob.parentElement.getBoundingClientRect().width * 0.7);
     </script>
 </body>
 </html>
